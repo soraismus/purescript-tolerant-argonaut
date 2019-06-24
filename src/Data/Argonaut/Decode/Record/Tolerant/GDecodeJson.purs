@@ -189,14 +189,7 @@ else instance gDecodeJson_ConsConsCons_nonPlus
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l0 :: RLProxy (Cons s1 v1 l0')
-    l0 = RLProxy
-
-    l1' :: RLProxy l1'
-    l1' = RLProxy
-
-    l1 :: RLProxy l1
-    l1 = RLProxy
-
-    s :: SProxy s
-    s = SProxy
+    l0  = RLProxy :: RLProxy (Cons s1 v1 l0')
+    l1' = RLProxy :: RLProxy l1'
+    l1  = RLProxy :: RLProxy l1
+    s   = SProxy  :: SProxy s

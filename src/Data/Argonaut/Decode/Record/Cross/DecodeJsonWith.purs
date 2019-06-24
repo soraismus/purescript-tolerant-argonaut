@@ -95,20 +95,9 @@ instance decodeJsonWithCons
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l0 :: RLProxy l0
-    l0 = RLProxy
-
-    l0' :: RLProxy l0'
-    l0' = RLProxy
-
-    l2 :: RLProxy l2
-    l2 = RLProxy
-
-    l3 :: RLProxy l3
-    l3 = RLProxy
-
-    l3' :: RLProxy l3'
-    l3' = RLProxy
-
-    s :: SProxy s
-    s = SProxy
+    l0' = RLProxy :: RLProxy l0'
+    l0  = RLProxy :: RLProxy l0
+    l2  = RLProxy :: RLProxy l2
+    l3' = RLProxy :: RLProxy l3'
+    l3  = RLProxy :: RLProxy l3
+    s   = SProxy  :: SProxy s
