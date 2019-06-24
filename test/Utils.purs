@@ -7,7 +7,8 @@ module Test.Utils
 
 import Prelude (class Eq, class Show, show, (==), (<>), ($))
 
-import Data.Status (class Status, summarize)
+import Data.Foldable (class Foldable, foldr)
+import Data.Status (class Status)
 import Data.Tuple (Tuple(Tuple), uncurry)
 import Test.Unit (Test)
 import Test.Unit.Assert as Assert
@@ -17,7 +18,8 @@ assert = uncurry Assert.assert
 
 assertEquivalence
   :: forall f a
-   . Status f
+   . Foldable f
+  => Status f
   => Eq a
   => Show a
   => f a
@@ -28,37 +30,39 @@ assertEquivalence result value =
 
 check
   :: forall f a
-   . Status f
+   . Foldable f
+  => Status f
   => f a
   -> String
   -> (a -> Boolean)
   -> Tuple String Boolean
 check result msg predicate =
-  summarize
-    (Tuple failsUnexpectedly false)
-    (\val ->
+  foldr
+    (\val _ ->
       let
         state = predicate val
         msg' = if state then successful else msg
       in Tuple msg' state)
+    (Tuple failsUnexpectedly false)
     result
 
 checkEquivalence
   :: forall f a
-   . Status f
+   . Foldable f
+  => Status f
   => Eq a
   => Show a
   => f a
   -> a
   -> Tuple String Boolean
 checkEquivalence result value =
-  summarize
-    (Tuple failsUnexpectedly false)
-    (\val ->
+  foldr
+    (\val _ ->
       let
         state = (val == value)
         msg' = if state then successful else ("Should be " <> show value)
       in Tuple msg' state)
+    (Tuple failsUnexpectedly false)
     result
 
 failsUnexpectedly :: String
