@@ -72,7 +72,7 @@ suites =
                                 , b2: value1.b2
                                 })
 
---     test "#3 -- Should Not Compile" do
+    test "#3 -- Should Not Compile" $ pure unit
 --       let
 --         value0 = { a0: 0
 --                  , a1: 1
@@ -93,7 +93,7 @@ suites =
 --                                 , a4: value0.a4
 --                                 })
 
---     test "#4 -- Should Not Compile" do
+    test "#4 -- Should Not Compile" $ pure unit
 --       let
 --         value0 = { a0: 0
 --                  , a1: 1
