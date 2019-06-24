@@ -193,7 +193,7 @@ let additions =
         , "test-unit"
         , "variant"
         ]
-        "https://github.com/matthew-hilty/purescript-subcategory.git"
+        "https://github.com/matthew-hilty/purescript-struct.git"
         "v0.1.0"
   , subcategory =
       mkPackage
