@@ -15,12 +15,13 @@ import Data.Struct (class RInsert, rinsert)
 import Data.Status (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
-import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
+import Type.Proxying (class RLProxying)
+import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Row (class Cons, class Lacks, Cons, Nil, kind RowList)
 
 class GDecodeJson
   (p  :: Type -> Type -> Type)
-  (h  :: Type -> Type)
+  (f  :: Type -> Type)
   (g  :: # Type -> Type)
   (l0 :: RowList)
   (r0 :: # Type)
@@ -30,16 +31,19 @@ class GDecodeJson
   , l1 -> r1
   where
   gDecodeJson
-    :: RLProxy l0
-    -> RLProxy l1
+    :: forall h
+     . RLProxying h l0
+    => RLProxying h l1
+    => h l0
+    -> h l1
     -> Object Json
-    -> h (p (g r0) (g r1))
+    -> f (p (g r0) (g r1))
 
 instance gDecodeJson_NilNilNil
   :: ( Category p
-     , Status h
+     , Status f
      )
-  => GDecodeJson p h g Nil () Nil ()
+  => GDecodeJson p f g Nil () Nil ()
   where
   gDecodeJson _ _ _ = report identity
 
@@ -117,9 +121,9 @@ else instance gDecodeJson_ConsNilCons_nonPlus
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
-     , Status h
+     , Status f
      )
-  => GDecodeJson p h g (Cons s v l') r (Cons s v l') r
+  => GDecodeJson p f g (Cons s v l') r (Cons s v l') r
   where
   gDecodeJson _ _ _ = report identity
 

@@ -20,8 +20,9 @@ import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
-import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
+import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Equality (class TypeEquals, to)
+import Type.Proxying (class RLProxying)
 import Type.Row
   ( class Cons
   , class Lacks
@@ -45,8 +46,11 @@ class DecodeJsonWith
   , l0 l1 -> r2
   where
   decodeJsonWith
-    :: RLProxy l0
-    -> RLProxy l1
+    :: forall h
+     . RLProxying h l0
+    => RLProxying h l1
+    => h l0
+    -> h l1
     -> g r0
     -> Object Json
     -> f (p (g r1) (g r2))

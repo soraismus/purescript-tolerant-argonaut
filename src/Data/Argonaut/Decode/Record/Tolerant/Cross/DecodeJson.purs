@@ -17,7 +17,7 @@ import Data.Argonaut.Decode.Record.Utils (reportJson)
 import Data.Status (class Status, report)
 import Foreign.Object (Object)
 import Record.Builder (Builder, build)
-import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
+import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Row (class RowToList, Nil)
 
 decodeJsonWith

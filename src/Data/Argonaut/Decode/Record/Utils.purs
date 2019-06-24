@@ -14,7 +14,7 @@ import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status (class Status, report, reportError)
 import Foreign.Object (Object)
-import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
+import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Row (class RowToList)
 
 elaborateFailure :: forall a. String -> Either String a -> Either String a

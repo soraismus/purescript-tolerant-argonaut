@@ -14,7 +14,8 @@ import Data.Struct (class RInsert, rinsert)
 import Data.Status (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
-import Type.Data.RowList (RLProxy(RLProxy)) -- Argonaut dependency
+import Type.Data.RowList (RLProxy(RLProxy))
+import Type.Proxying (class RLProxying)
 import Type.Row (class Cons, class Lacks, Cons, Nil, kind RowList)
 
 class GDecodeJson
@@ -31,8 +32,11 @@ class GDecodeJson
   , l1 l2 -> l0
   where
   gDecodeJson
-    :: RLProxy l1
-    -> RLProxy l2
+    :: forall h
+     . RLProxying h l1
+    => RLProxying h l2
+    => h l1
+    -> h l2
     -> Object Json
     -> f (p (g r1) (g r2))
 
