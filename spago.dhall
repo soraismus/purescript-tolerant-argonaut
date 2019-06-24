@@ -7,8 +7,10 @@ You can edit this file as you like.
 , dependencies =
     [ "argonaut-codecs"
     , "argonaut-core"
+    , "arrays"
     , "console"
     , "effect"
+    , "lists"
     , "proxying"
     , "record"
     , "struct"
