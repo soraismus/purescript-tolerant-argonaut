@@ -2,13 +2,17 @@ module Test.Utils
   ( assert
   , assertEquivalence
   , check
+  , checkError
+  , doesntFail
+  , fails
   , withErrorMsg
   ) where
 
 import Prelude (class Eq, class Show, show, (==), (<>), ($))
 
+import Data.Either (Either)
 import Data.Foldable (class Foldable, foldr)
-import Data.Status (class Status)
+import Data.Status (class Status, isError)
 import Data.Tuple (Tuple(Tuple), uncurry)
 import Test.Unit (Test)
 import Test.Unit.Assert as Assert
@@ -64,6 +68,23 @@ checkEquivalence result value =
       in Tuple msg' state)
     (Tuple failsUnexpectedly false)
     result
+
+checkError
+  :: forall a
+   . Either String a
+  -> String
+  -> (a -> Boolean)
+  -> Tuple String Boolean
+checkError = check
+
+doesntFail :: String
+doesntFail = "is decoded despite expectation of failure"
+
+fails :: forall f a. Status f => f a -> Tuple String Boolean
+fails result =
+  if isError result
+    then Tuple successful true
+    else Tuple doesntFail false
 
 failsUnexpectedly :: String
 failsUnexpectedly = "fails unexpectedly"

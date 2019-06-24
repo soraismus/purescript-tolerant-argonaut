@@ -1,9 +1,19 @@
-module Test.Main where
+module Test.Main
+  ( main
+  ) where
 
-import Prelude
+import Prelude (Unit, discard)
+
 import Effect (Effect)
-import Effect.Console (log)
+import Test.Suites.Cross (suites) as Cross
+import Test.Suites.Lazy (suites) as Lazy
+import Test.Suites.Override (suites) as Override
+import Test.Suites.Tolerant (suites) as Tolerant
+import Test.Unit.Main (runTest)
 
 main :: Effect Unit
-main = do
-  log "You should add some tests."
+main = runTest do
+  Cross.suites
+  Lazy.suites
+  Override.suites
+  Tolerant.suites
