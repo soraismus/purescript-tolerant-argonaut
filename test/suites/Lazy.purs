@@ -2,7 +2,7 @@ module Test.Suites.Lazy
   ( suites
   ) where
 
-import Prelude (discard, (==), ($))
+import Prelude (discard, pure, unit, (==), ($))
 
 import Data.Argonaut.Decode.Record.Lazy (decodeJson')
 import Data.Argonaut.Encode (encodeJson)
