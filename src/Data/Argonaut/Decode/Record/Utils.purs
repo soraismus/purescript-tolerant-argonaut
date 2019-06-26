@@ -14,7 +14,8 @@ import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Bifunctor (lmap)
 import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
-import Data.Status (class Status, report, reportError)
+import Data.Operator.Bottom (class Bottom2, bottom2)
+import Data.Operator.Top (class Top1_, top1_)
 import Foreign.Object (Object)
 import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Proxy (Proxy(Proxy))
@@ -35,20 +36,26 @@ msgType = Proxy
 notObjectErrorMessage :: String
 notObjectErrorMessage = "Could not convert JSON to object"
 
-reportJson :: forall a f. Status f String => (Object Json -> f a) -> Json -> f a
+reportJson
+  :: forall a f
+   . Bottom2 f String
+  => (Object Json -> f a)
+  -> Json
+  -> f a
 reportJson f json =
   case toObject json of
     Just object -> f object
-    Nothing -> reportError notObjectErrorMessage
+    Nothing -> bottom2 notObjectErrorMessage
 
 reportObject
   :: forall f l r
-   . GDecodeJson r l
+   . Bottom2 f String
+  => GDecodeJson r l
   => RowToList r l
-  => Status f String
+  => Top1_ f
   => Object Json
   -> f (Record r)
 reportObject object =
   case gDecodeJson object (RLProxy :: RLProxy l) of
-    Left errorStr -> reportError errorStr
-    Right record -> report msgType record
+    Left errorStr -> bottom2 errorStr
+    Right record -> top1_ record

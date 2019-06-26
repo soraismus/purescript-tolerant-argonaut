@@ -13,8 +13,9 @@ import Data.Argonaut.Decode.Record.Cross.Class
   ( class DecodeJsonWith
   , decodeJsonWith
   ) as D
-import Data.Argonaut.Decode.Record.Utils (msgType, reportJson)
-import Data.Status (class Status, report)
+import Data.Argonaut.Decode.Record.Utils (reportJson)
+import Data.Operator.Bottom (class Bottom2)
+import Data.Operator.Top (class Top1_, top1_)
 import Foreign.Object (Object)
 import Record.Builder (Builder, build)
 import Type.Data.RowList (RLProxy(RLProxy))
@@ -23,11 +24,12 @@ import Type.Row (class RowToList, Nil)
 decodeJsonWith
   :: forall f l0 l2 r0 r2 r3
    . Bind f
+  => Bottom2 f String
   => D.DecodeJsonWith Builder f Record l0 r0 l2 r2 r3 (Record r2)
   => GDecodeJson Builder f Record Nil () l2 r2
   => RowToList r0 l0
   => RowToList r2 l2
-  => Status f String
+  => Top1_ f
   => Record r0
   -> Json
   -> f (Record r3)
@@ -48,4 +50,4 @@ decodeJsonWith decoderRecord = reportJson go
         decoderRecord
         object
         record2
-    report msgType $ build addFields0 record2
+    top1_ $ build addFields0 record2

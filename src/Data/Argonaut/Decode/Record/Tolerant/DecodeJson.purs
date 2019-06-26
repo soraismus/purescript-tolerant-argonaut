@@ -11,10 +11,10 @@ import Data.Argonaut.Decode.Record.Tolerant.GDecodeJson
   ( class GDecodeJson
   , gDecodeJson
   ) as G
-import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Either (Either)
 import Data.Maybe (Maybe(Just, Nothing))
-import Data.Status (report, reportError)
+import Data.Operator.Bottom (bottom2)
+import Data.Operator.Top (top1_)
 import Record.Builder (Builder, build)
 import Type.Data.RowList (RLProxy(RLProxy))
 import Type.Row (class RowToList, Nil, kind RowList)
@@ -36,9 +36,9 @@ instance decodeRecord
             (RLProxy :: RLProxy Nil)
             (RLProxy :: RLProxy l)
             object
-        report msgType $ build builder {}
+        top1_ $ build builder {}
       Nothing ->
-        reportError "Could not convert JSON to object"
+        bottom2 "Could not convert JSON to object"
 
 else instance decodeDecodeJson :: D.DecodeJson a => DecodeJson a where
   decodeJson = D.decodeJson

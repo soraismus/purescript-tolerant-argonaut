@@ -14,10 +14,11 @@ import Prelude
   )
 
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage, msgType)
+import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage)
 import Data.Struct (class RGet, class RInsert, rget, rinsert)
 import Data.Maybe (Maybe(Just, Nothing))
-import Data.Status (class Status, report, reportError)
+import Data.Operator.Bottom (class Bottom2, bottom2)
+import Data.Operator.Top (class Top1_, top1_)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
 import Type.Data.RowList (RLProxy(RLProxy))
@@ -53,23 +54,24 @@ class DecodeJsonWith
 
 instance decodeJsonWithNil
   :: ( Category p
-     , Status f String
+     , Top1_ f
      )
   => DecodeJsonWith p f g Nil () l r r a
   where
-  decodeJsonWith _ _ _ _ _ = report msgType identity
+  decodeJsonWith _ _ _ _ _ = top1_ identity
 
 instance decodeJsonWithCons
   :: ( Bind f
+     , Bottom2 f String
      , Cons s fn r0' r0
      , Cons s v r3' r3
      , DecodeJsonWith p f g l0' r0' l2 r2 r3' a
      , IsSymbol s
-     , Status f String
      , Lacks s r3'
      , RGet g SProxy s l0 r0
      , RInsert p g SProxy s l3' r3' l3 r3
      , Semigroupoid p
+     , Top1_ f
      , TypeEquals fn (Json -> a -> f v)
      )
   => DecodeJsonWith p f g (Cons s fn l0') r0 l2 r2 r3 a
@@ -79,9 +81,9 @@ instance decodeJsonWithCons
       Just jsonVal -> do
         val <- decoder jsonVal x
         doRest <- decodeJsonWith l0' l2 decoderRecord' object x
-        report msgType $ rinsert l3' l3 s val <<< doRest
+        top1_ $ rinsert l3' l3 s val <<< doRest
       Nothing ->
-        reportError $ getMissingFieldErrorMessage fieldName
+        bottom2 $ getMissingFieldErrorMessage fieldName
     where
     decoder :: Json -> a -> f v
     decoder = to $ rget l0 s decoderRecord

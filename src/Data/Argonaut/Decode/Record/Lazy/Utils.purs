@@ -11,7 +11,7 @@ import Data.Argonaut.Decode.Record.Lazy.GDecodeJson
   , gDecodeJson
   ) as D
 import Data.Argonaut.Decode.Record.Utils (reportJson)
-import Data.Status (class Status)
+import Data.Operator.Bottom (class Bottom2)
 import Foreign.Object (Object)
 import Record.Builder (Builder, build)
 import Type.Data.RowList (RLProxy(RLProxy))
@@ -19,11 +19,11 @@ import Type.Row (class RowToList, Nil)
 
 decodeJson
   :: forall f l r
-   . D.GDecodeJson Builder f Record l Nil () l r
+   . Bottom2 f String
+  => D.GDecodeJson Builder f Record l Nil () l r
   => Functor f
   => RowToList r l
   => RowToList r l
-  => Status f String
   => Json
   -> f (Record r)
 decodeJson json =
@@ -31,10 +31,10 @@ decodeJson json =
 
 decodeJson'
   :: forall f g l0 l1 l2 p r1 r2
-   . D.GDecodeJson p f g l0 l1 r1 l2 r2
+   . Bottom2 f String
+  => D.GDecodeJson p f g l0 l1 r1 l2 r2
   => RowToList r1 l1
   => RowToList r2 l2
-  => Status f String
   => Json
   -> f (p (g r1) (g r2))
 decodeJson' json = reportJson go json

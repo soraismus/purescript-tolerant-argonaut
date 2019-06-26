@@ -7,11 +7,12 @@ import Prelude (class Category, class Semigroupoid, bind, identity, ($), (<<<))
 
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson) as D
-import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage, msgType)
+import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage)
 import Data.Either (Either)
 import Data.Maybe (Maybe(Just, Nothing))
+import Data.Operator.Bottom (bottom2)
+import Data.Operator.Top (class Top1_, top1_)
 import Data.Struct (class RInsert, rinsert)
-import Data.Status (class Status, report, reportError)
 import Data.Symbol (class IsSymbol, SProxy(SProxy), reflectSymbol)
 import Foreign.Object (Object, lookup)
 import Type.Data.RowList (RLProxy(RLProxy))
@@ -42,11 +43,11 @@ class GDecodeJson
 
 instance gDecodeJson_NilNilNil
   :: ( Category p
-     , Status f String
+     , Top1_ f
      )
   => GDecodeJson p f g Nil Nil () Nil ()
   where
-  gDecodeJson _ _ _ = report msgType identity
+  gDecodeJson _ _ _ = top1_ identity
 
 instance gDecodeJson_ConsNilCons
   :: ( Cons s v r' r
@@ -64,9 +65,9 @@ instance gDecodeJson_ConsNilCons
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson nil l' object
-        report msgType $ rinsert l' l s val <<< doRest
+        top1_ $ rinsert l' l s val <<< doRest
       Nothing ->
-        reportError $ getMissingFieldErrorMessage fieldName
+        bottom2 $ getMissingFieldErrorMessage fieldName
     where
     fieldName :: String
     fieldName = reflectSymbol s
@@ -85,11 +86,11 @@ instance gDecodeJson_ConsNilCons
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
-     , Status f String
+     , Top1_ f
      )
   => GDecodeJson p f g Nil (Cons s v l') r (Cons s v l') r
   where
-  gDecodeJson _ _ _ = report msgType identity
+  gDecodeJson _ _ _ = top1_ identity
 
 else instance gDecodeJson_ConsConsCons
   :: ( Cons s v r2' r2
@@ -116,9 +117,9 @@ else instance gDecodeJson_ConsConsCons
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson l1 l2' object
-        report msgType $ rinsert l2' l2 s val <<< doRest
+        top1_ $ rinsert l2' l2 s val <<< doRest
       Nothing ->
-        reportError $ getMissingFieldErrorMessage fieldName
+        bottom2 $ getMissingFieldErrorMessage fieldName
     where
     fieldName :: String
     fieldName = reflectSymbol s
