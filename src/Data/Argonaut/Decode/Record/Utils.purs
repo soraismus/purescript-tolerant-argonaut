@@ -1,7 +1,6 @@
 module Data.Argonaut.Decode.Record.Utils
   ( elaborateFailure
   , getMissingFieldErrorMessage
-  , msgType
   , reportJson
   , reportObject
   ) where
@@ -10,7 +9,6 @@ import Prelude
 
 import Data.Argonaut.Core (Json, toObject)
 import Data.Argonaut.Decode.Class (class GDecodeJson, gDecodeJson)
-import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Bifunctor (lmap)
 import Data.Either (Either(Left, Right))
 import Data.Maybe (Maybe(Just, Nothing))
@@ -18,7 +16,6 @@ import Data.Operator.Bottom (class Bottom2, bottom2)
 import Data.Operator.Top (class Top1_, top1_)
 import Foreign.Object (Object)
 import Type.Data.RowList (RLProxy(RLProxy))
-import Type.Proxy (Proxy(Proxy))
 import Type.Row (class RowToList)
 
 elaborateFailure :: forall a. String -> Either String a -> Either String a
@@ -29,9 +26,6 @@ elaborateFailure s e = lmap msg e
 getMissingFieldErrorMessage :: String -> String
 getMissingFieldErrorMessage fieldName =
   "JSON was missing expected field: " <> fieldName
-
-msgType :: Proxy String
-msgType = Proxy
 
 notObjectErrorMessage :: String
 notObjectErrorMessage = "Could not convert JSON to object"
