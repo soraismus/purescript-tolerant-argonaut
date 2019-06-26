@@ -72,17 +72,10 @@ instance gDecodeJson_ConsNilCons_Plus
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l' :: RLProxy l'
-    l' = RLProxy
-
-    l :: RLProxy l
-    l = RLProxy
-
-    nil :: RLProxy Nil
-    nil = RLProxy
-
-    s :: SProxy s
-    s = SProxy
+    l'  = RLProxy :: RLProxy l'
+    l   = RLProxy :: RLProxy l
+    nil = RLProxy :: RLProxy Nil
+    s   = SProxy  :: SProxy s
 
 else instance gDecodeJson_ConsNilCons_nonPlus
   :: ( Cons s v r' r
@@ -107,18 +100,10 @@ else instance gDecodeJson_ConsNilCons_nonPlus
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l' :: RLProxy l'
-    l' = RLProxy
-
-    l :: RLProxy l
-    l = RLProxy
-
-    nil :: RLProxy Nil
-    nil = RLProxy
-
-    s :: SProxy s
-    s = SProxy
-
+    l'  = RLProxy :: RLProxy l'
+    l   = RLProxy :: RLProxy l
+    nil = RLProxy :: RLProxy Nil
+    s   = SProxy  :: SProxy s
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
@@ -153,18 +138,10 @@ else instance gDecodeJson_ConsConsCons_Plus
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l0 :: RLProxy (Cons s1 v1 l0')
-    l0 = RLProxy
-
-    l1' :: RLProxy l1'
-    l1' = RLProxy
-
-    l1 :: RLProxy l1
-    l1 = RLProxy
-
-    s :: SProxy s
-    s = SProxy
-
+    l0  = RLProxy :: RLProxy (Cons s1 v1 l0')
+    l1' = RLProxy :: RLProxy l1'
+    l1  = RLProxy :: RLProxy l1
+    s   = SProxy  :: SProxy s
 
 else instance gDecodeJson_ConsConsCons_nonPlus
   :: ( Cons s v r1' r1

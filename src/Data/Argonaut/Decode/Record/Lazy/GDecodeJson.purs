@@ -72,17 +72,10 @@ instance gDecodeJson_ConsNilCons
     fieldName :: String
     fieldName = reflectSymbol s
 
-    l' :: RLProxy l'
-    l' = RLProxy
-
-    l :: RLProxy l
-    l = RLProxy
-
-    nil :: RLProxy Nil
-    nil = RLProxy
-
-    s :: SProxy s
-    s = SProxy
+    l'  = RLProxy :: RLProxy l'
+    l   = RLProxy :: RLProxy l
+    nil = RLProxy :: RLProxy Nil
+    s   = SProxy  :: SProxy s
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
