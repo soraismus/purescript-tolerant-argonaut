@@ -10,7 +10,6 @@ module Test.Utils
 
 import Prelude (class Eq, class Show, show, (==), (<>), ($))
 
-import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Either (Either)
 import Data.Foldable (class Foldable, foldr)
 import Data.Maybe (Maybe(Just))
