@@ -10,7 +10,7 @@ import Data.Argonaut.Decode.Record.Cross.Class
   ( class DecodeJsonWith
   , decodeJsonWith
   ) as D
-import Data.Argonaut.Decode.Record.Utils (reportJson, reportObject)
+import Data.Argonaut.Decode.Record.Utils (msgType, reportJson, reportObject)
 import Data.Status (class Status, report)
 import Foreign.Object (Object)
 import Record.Builder (Builder, build)
@@ -24,7 +24,7 @@ decodeJsonWith
   => GDecodeJson r2 l2
   => RowToList r0 l0
   => RowToList r2 l2
-  => Status f
+  => Status f String
   => Record r0
   -> Json
   -> f (Record r3)
@@ -40,4 +40,4 @@ decodeJsonWith decoderRecord = reportJson go
         decoderRecord
         object
         record2
-    report $ build addFields0 record2
+    report msgType $ build addFields0 record2

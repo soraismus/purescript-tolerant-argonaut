@@ -126,7 +126,23 @@ let overrides =
   }
 
 let additions =
-  { lens =
+  { higher-order =
+      mkPackage
+        [ "aff"
+        , "catenable-lists"
+        , "console"
+        , "effect"
+        , "errors"
+        , "generics-rep"
+        , "lazy"
+        , "lists"
+        , "ordered-collections"
+        , "profunctor"
+        , "typelevel-prelude"
+        ]
+        "/home/polytope/projects/purescript/mh/purescript-higher-order"
+        "v0.1.0"
+  , lens =
       mkPackage
         [ "const"
         , "distributive"

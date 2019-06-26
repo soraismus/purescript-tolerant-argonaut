@@ -11,6 +11,7 @@ import Data.Argonaut.Decode.Record.Tolerant.GDecodeJson
   ( class GDecodeJson
   , gDecodeJson
   ) as G
+import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Either (Either)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status (report, reportError)
@@ -35,7 +36,7 @@ instance decodeRecord
             (RLProxy :: RLProxy Nil)
             (RLProxy :: RLProxy l)
             object
-        report $ build builder {}
+        report msgType $ build builder {}
       Nothing ->
         reportError "Could not convert JSON to object"
 

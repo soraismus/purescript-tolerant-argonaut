@@ -7,7 +7,7 @@ import Prelude (class Category, class Semigroupoid, bind, identity, ($), (<<<))
 
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson) as D
-import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage)
+import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage, msgType)
 import Data.Either (Either)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Struct (class RInsert, rinsert)
@@ -42,11 +42,11 @@ class GDecodeJson
 
 instance gDecodeJson_NilNilNil
   :: ( Category p
-     , Status f
+     , Status f String
      )
   => GDecodeJson p f g Nil Nil () Nil ()
   where
-  gDecodeJson _ _ _ = report identity
+  gDecodeJson _ _ _ = report msgType identity
 
 instance gDecodeJson_ConsNilCons
   :: ( Cons s v r' r
@@ -64,7 +64,7 @@ instance gDecodeJson_ConsNilCons
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson nil l' object
-        report $ rinsert l' l s val <<< doRest
+        report msgType $ rinsert l' l s val <<< doRest
       Nothing ->
         reportError $ getMissingFieldErrorMessage fieldName
     where
@@ -85,11 +85,11 @@ instance gDecodeJson_ConsNilCons
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
-     , Status f
+     , Status f String
      )
   => GDecodeJson p f g Nil (Cons s v l') r (Cons s v l') r
   where
-  gDecodeJson _ _ _ = report identity
+  gDecodeJson _ _ _ = report msgType identity
 
 else instance gDecodeJson_ConsConsCons
   :: ( Cons s v r2' r2
@@ -116,7 +116,7 @@ else instance gDecodeJson_ConsConsCons
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson l1 l2' object
-        report $ rinsert l2' l2 s val <<< doRest
+        report msgType $ rinsert l2' l2 s val <<< doRest
       Nothing ->
         reportError $ getMissingFieldErrorMessage fieldName
     where

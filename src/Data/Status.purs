@@ -1,40 +1,18 @@
 module Data.Status
   ( class Status
-  , isError
   , report
   , reportError
   )
   where
 
-import Prelude (const)
+import Data.Operator.Bottom (class Bottom2, bottom2)
+import Data.Operator.Top (class Top1_, top1_)
+import Type.Proxy (Proxy)
 
-import Data.Array (null, singleton) as Array
-import Data.Either (Either(Left, Right), isLeft)
-import Data.List (List(Nil))
-import Data.List (null, singleton) as List
-import Data.Maybe (Maybe(Just, Nothing), isNothing)
+class Status f a where
+  report :: forall b. Proxy a -> b -> f b
+  reportError :: forall b. a -> f b
 
-class Status f where
-  isError :: forall a. f a -> Boolean
-  report :: forall a. a -> f a
-  reportError :: forall a. String -> f a
-
-instance statusArray :: Status Array where
-  isError = Array.null
-  report = Array.singleton
-  reportError = const []
-
-instance statusEitherString :: Status (Either String) where
-  isError = isLeft
-  report = Right
-  reportError = Left
-
-instance statusList :: Status List where
-  isError = List.null
-  report = List.singleton
-  reportError = const Nil
-
-instance statusMaybe :: Status Maybe where
-  isError = isNothing
-  report = Just
-  reportError = const Nothing
+instance statusBottom1_Top1_ :: (Bottom2 f a, Top1_ f) => Status f a where
+  report _ = top1_
+  reportError = bottom2

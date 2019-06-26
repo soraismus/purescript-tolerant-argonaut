@@ -10,6 +10,7 @@ You can edit this file as you like.
     , "arrays"
     , "console"
     , "effect"
+    , "higher-order"
     , "lists"
     , "proxying"
     , "record"

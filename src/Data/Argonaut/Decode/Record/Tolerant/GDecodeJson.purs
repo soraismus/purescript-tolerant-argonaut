@@ -8,7 +8,7 @@ import Prelude (class Category, class Semigroupoid, bind, identity, ($), (<<<))
 import Control.Plus (class Plus, empty)
 import Data.Argonaut.Core (Json)
 import Data.Argonaut.Decode.Class (class DecodeJson, decodeJson) as D
-import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage)
+import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage, msgType)
 import Data.Either (Either)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Struct (class RInsert, rinsert)
@@ -41,11 +41,11 @@ class GDecodeJson
 
 instance gDecodeJson_NilNilNil
   :: ( Category p
-     , Status f
+     , Status f String
      )
   => GDecodeJson p f g Nil () Nil ()
   where
-  gDecodeJson _ _ _ = report identity
+  gDecodeJson _ _ _ = report msgType identity
 
 instance gDecodeJson_ConsNilCons_Plus
   :: ( Cons s (f v) r' r
@@ -64,9 +64,9 @@ instance gDecodeJson_ConsNilCons_Plus
     case lookup fieldName object of
       Just jsonVal -> do
         (val :: f v) <- D.decodeJson jsonVal
-        report $ rinsert l' l s val <<< doRest
+        report msgType $ rinsert l' l s val <<< doRest
       Nothing ->
-        report $ rinsert l' l s (empty :: f v) <<< doRest
+        report msgType $ rinsert l' l s (empty :: f v) <<< doRest
     where
     fieldName :: String
     fieldName = reflectSymbol s
@@ -99,7 +99,7 @@ else instance gDecodeJson_ConsNilCons_nonPlus
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson nil l' object
-        report $ rinsert l' l s val <<< doRest
+        report msgType $ rinsert l' l s val <<< doRest
       Nothing ->
         reportError $ getMissingFieldErrorMessage fieldName
     where
@@ -121,11 +121,11 @@ else instance gDecodeJson_ConsNilCons_nonPlus
 
 instance gDecodeJson_NilConsCons
   :: ( Category p
-     , Status f
+     , Status f String
      )
   => GDecodeJson p f g (Cons s v l') r (Cons s v l') r
   where
-  gDecodeJson _ _ _ = report identity
+  gDecodeJson _ _ _ = report msgType identity
 
 else instance gDecodeJson_ConsConsCons_Plus
   :: ( Cons s (f v) r1' r1
@@ -145,9 +145,9 @@ else instance gDecodeJson_ConsConsCons_Plus
     case lookup fieldName object of
       Just jsonVal -> do
         (val :: f v) <- D.decodeJson jsonVal
-        report $ rinsert l1' l1 s val <<< doRest
+        report msgType $ rinsert l1' l1 s val <<< doRest
       Nothing ->
-        report $ rinsert l1' l1 s (empty :: f v) <<< doRest
+        report msgType $ rinsert l1' l1 s (empty :: f v) <<< doRest
     where
     fieldName :: String
     fieldName = reflectSymbol s
@@ -182,7 +182,7 @@ else instance gDecodeJson_ConsConsCons_nonPlus
       Just jsonVal -> do
         val <- D.decodeJson jsonVal
         doRest <- gDecodeJson l0 l1' object
-        report $ rinsert l1' l1 s val <<< doRest
+        report msgType $ rinsert l1' l1 s val <<< doRest
       Nothing ->
         reportError $ getMissingFieldErrorMessage fieldName
     where

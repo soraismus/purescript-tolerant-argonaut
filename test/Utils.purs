@@ -10,9 +10,13 @@ module Test.Utils
 
 import Prelude (class Eq, class Show, show, (==), (<>), ($))
 
+import Data.Argonaut.Decode.Record.Utils (msgType)
 import Data.Either (Either)
 import Data.Foldable (class Foldable, foldr)
-import Data.Status (class Status, isError)
+import Data.Maybe (Maybe(Just))
+import Data.Operator.Bottom (class Bottom2, bottom2)
+import Data.Operator.PartialOrd1 (class PartialOrd1, (.>=?))
+import Data.Status (class Status)
 import Data.Tuple (Tuple(Tuple), uncurry)
 import Test.Unit (Test)
 import Test.Unit.Assert as Assert
@@ -23,7 +27,7 @@ assert = uncurry Assert.assert
 assertEquivalence
   :: forall f a
    . Foldable f
-  => Status f
+  => Status f String
   => Eq a
   => Show a
   => f a
@@ -35,7 +39,7 @@ assertEquivalence result value =
 check
   :: forall f a
    . Foldable f
-  => Status f
+  => Status f String
   => f a
   -> String
   -> (a -> Boolean)
@@ -53,7 +57,7 @@ check result msg predicate =
 checkEquivalence
   :: forall f a
    . Foldable f
-  => Status f
+  => Status f String
   => Eq a
   => Show a
   => f a
@@ -80,7 +84,13 @@ checkError = check
 doesntFail :: String
 doesntFail = "is decoded despite expectation of failure"
 
-fails :: forall f a. Status f => f a -> Tuple String Boolean
+fails
+  :: forall f a
+   . Bottom2 f String
+  => PartialOrd1 f
+  => Status f String
+  => f a
+  -> Tuple String Boolean
 fails result =
   if isError result
     then Tuple successful true
@@ -88,6 +98,15 @@ fails result =
 
 failsUnexpectedly :: String
 failsUnexpectedly = "fails unexpectedly"
+
+isError
+  :: forall a f
+   . Bottom2 f String
+  => PartialOrd1 f
+  => f a
+  -> Boolean
+isError x =
+  (x .>=? bottom2 "") == Just true
 
 successful :: String
 successful = "successful test"

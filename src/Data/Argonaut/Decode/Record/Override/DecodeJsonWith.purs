@@ -14,7 +14,7 @@ import Prelude
   )
 
 import Data.Argonaut.Core (Json)
-import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage)
+import Data.Argonaut.Decode.Record.Utils (getMissingFieldErrorMessage, msgType)
 import Data.Struct (class RGet, class RInsert, rget, rinsert)
 import Data.Maybe (Maybe(Just, Nothing))
 import Data.Status (class Status, report, reportError)
@@ -57,11 +57,11 @@ class DecodeJsonWith
 
 instance decodeJsonWithNil
   :: ( Category p
-     , Status f
+     , Status f String
      )
   => DecodeJsonWith p f g Nil () l r r
   where
-  decodeJsonWith _ _ _ _ = report identity
+  decodeJsonWith _ _ _ _ = report msgType identity
 
 instance decodeJsonWithCons
   :: ( Bind f
@@ -69,7 +69,7 @@ instance decodeJsonWithCons
      , Cons s v r2' r2
      , DecodeJsonWith p f g l0' r0' l1 r1 r2'
      , IsSymbol s
-     , Status f
+     , Status f String
      , Lacks s r2'
      , RGet g SProxy s l0 r0
      , RInsert p g SProxy s l2' r2' l2 r2
@@ -83,7 +83,7 @@ instance decodeJsonWithCons
       Just jsonVal -> do
         val <- decoder jsonVal
         doRest <- decodeJsonWith l0' l1 decoderRecord' object
-        report $ rinsert l2' l2 s val <<< doRest
+        report msgType $ rinsert l2' l2 s val <<< doRest
       Nothing ->
         reportError $ getMissingFieldErrorMessage fieldName
     where

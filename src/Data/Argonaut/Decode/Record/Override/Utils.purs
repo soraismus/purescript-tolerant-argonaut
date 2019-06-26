@@ -10,7 +10,7 @@ import Data.Argonaut.Decode.Record.Override.DecodeJsonWith
   ( class DecodeJsonWith
   , decodeJsonWith
   ) as D
-import Data.Argonaut.Decode.Record.Utils (reportJson, reportObject)
+import Data.Argonaut.Decode.Record.Utils (msgType, reportJson, reportObject)
 import Data.Status (class Status, report)
 import Foreign.Object (Object)
 import Record.Builder (Builder, build)
@@ -24,7 +24,7 @@ decodeJsonWith
   => GDecodeJson r1 l1
   => RowToList r0 l0
   => RowToList r1 l1
-  => Status f
+  => Status f String
   => Record r0
   -> Json
   -> f (Record r2)
@@ -38,4 +38,4 @@ decodeJsonWith decoderRecord = reportJson go
         (RLProxy :: RLProxy l1)
         decoderRecord
         object
-    report $ build addFields0 record1
+    report msgType $ build addFields0 record1

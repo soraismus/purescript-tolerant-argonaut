@@ -23,7 +23,7 @@ decodeJson
   => Functor f
   => RowToList r l
   => RowToList r l
-  => Status f
+  => Status f String
   => Json
   -> f (Record r)
 decodeJson json =
@@ -34,7 +34,7 @@ decodeJson'
    . D.GDecodeJson p f g l0 l1 r1 l2 r2
   => RowToList r1 l1
   => RowToList r2 l2
-  => Status f
+  => Status f String
   => Json
   -> f (p (g r1) (g r2))
 decodeJson' json = reportJson go json
