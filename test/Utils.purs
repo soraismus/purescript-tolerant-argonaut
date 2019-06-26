@@ -15,7 +15,6 @@ import Data.Foldable (class Foldable, foldr)
 import Data.Maybe (Maybe(Just))
 import Data.Operator.Bottom (class Bottom2, bottom2)
 import Data.Operator.PartialOrd1 (class PartialOrd1, (.>=?))
-import Data.Status (class Status)
 import Data.Tuple (Tuple(Tuple), uncurry)
 import Test.Unit (Test)
 import Test.Unit.Assert as Assert
@@ -26,7 +25,6 @@ assert = uncurry Assert.assert
 assertEquivalence
   :: forall f a
    . Foldable f
-  => Status f String
   => Eq a
   => Show a
   => f a
@@ -38,7 +36,6 @@ assertEquivalence result value =
 check
   :: forall f a
    . Foldable f
-  => Status f String
   => f a
   -> String
   -> (a -> Boolean)
@@ -56,7 +53,6 @@ check result msg predicate =
 checkEquivalence
   :: forall f a
    . Foldable f
-  => Status f String
   => Eq a
   => Show a
   => f a
@@ -87,7 +83,6 @@ fails
   :: forall f a
    . Bottom2 f String
   => PartialOrd1 f
-  => Status f String
   => f a
   -> Tuple String Boolean
 fails result =
